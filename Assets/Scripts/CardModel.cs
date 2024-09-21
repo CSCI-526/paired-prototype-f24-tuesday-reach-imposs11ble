@@ -26,5 +26,13 @@ public class CardModel : MonoBehaviour
         currCard.enabled = true;
         int randomNum = Random.Range(0,55);
         currCard.sprite = faces[randomNum];
+
+        //let card disappear after 3 secs
+        StartCoroutine (HideCardAfterDelay(3));
+    }
+
+    IEnumerator HideCardAfterDelay(int sec) {
+        yield return new WaitForSeconds (sec);
+        currCard.enabled = false;
     }
 }
