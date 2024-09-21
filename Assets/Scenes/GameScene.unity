@@ -207,7 +207,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 451495442}
         m_TargetAssemblyTypeName: CardModel, Assembly-CSharp
-        m_MethodName: showCurrCard
+        m_MethodName: ShowCurrCard
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -477,7 +477,7 @@ GameObject:
   - component: {fileID: 451495442}
   - component: {fileID: 451495441}
   m_Layer: 5
-  m_Name: current
+  m_Name: currentCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -522,7 +522,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6fa8b9b00e3cf4f99bc9e5947b84ad08, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 128b9c256eac04da99f072fdc0c7b8ab, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -544,7 +544,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f145b0f5ecbb74a0389a36e89aff07a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  faces:
+  cardsStack:
   - {fileID: 21300000, guid: 3de6290a829ab4c82907cc85c3b748b0, type: 3}
   - {fileID: 21300000, guid: 4931c0fa524b040c9a825664bafb0774, type: 3}
   - {fileID: 21300000, guid: 6fa8b9b00e3cf4f99bc9e5947b84ad08, type: 3}
@@ -601,7 +601,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 6f97bc547b2b24d68bfb06cd6ccfc3b9, type: 3}
   - {fileID: 21300000, guid: 55cfec2169d9b4bee8a0711e608ab758, type: 3}
   currCard: {fileID: 451495441}
-  cardIndex: 0
 --- !u!222 &451495443
 CanvasRenderer:
   m_ObjectHideFlags: 0
