@@ -12,14 +12,33 @@ public class CardModel : MonoBehaviour
     public int cursorInCardOrder = 0;
     public float speed = 10.0f;
 
+    public Button upbutton;
+    public Button equalbutton;
+    public Button downbutton;
+    public Button nextbutton;
+
     // Start is called before the first frame update
     void Start()
     {
+        nextbutton.interactable = false;
+        upbutton.gameObject.SetActive(false);
+        downbutton.gameObject.SetActive(false);
+        equalbutton.gameObject.SetActive(false);
         // not showing the current card
         currCard.enabled = false;
 
         createCardOrder();
         ShuffleCards();
+
+
+        // show one card first so user cab bet for the next 
+        int indexInStack = cardsOrder[cursorInCardOrder];
+        currCard.enabled = true;
+        StartCoroutine(HideCardAfter(1));
+        StartCoroutine(BecomePrevCard(indexInStack));
+        cursorInCardOrder++;
+        nextbutton.interactable = true;
+
     }
 
     // Update is called once per frame
@@ -44,7 +63,7 @@ public class CardModel : MonoBehaviour
         while (numOfCardsleft > 1)
         {
             numOfCardsleft --;
-            int k = Random.Range(0,numOfCardsleft);;
+            int k = Random.Range(0,numOfCardsleft);
             int value = cardsOrder[k];
             cardsOrder[k] = cardsOrder[numOfCardsleft];
             cardsOrder[numOfCardsleft] = value;
@@ -52,22 +71,58 @@ public class CardModel : MonoBehaviour
         //Debug.Log("Cards Order: " + string.Join(", ", cardsOrder));
     }
 
+    public void checkBetResult(string betOperation)
+    {
+        int indexInStack = cardsOrder[cursorInCardOrder];
+        int cardNumber = indexInStack % 13;
+        int prevIndex = cursorInCardOrder - 1;
+        indexInStack = cardsOrder[prevIndex];
+        int prevCardNumber = indexInStack % 13;
+
+        if (betOperation.Equals("up"))
+        {
+            if (cardNumber > prevCardNumber)
+            {
+                Debug.Log("Correct!");
+            }
+            else
+            {
+                Debug.Log("False!");
+            }
+        }
+
+
+        StartCoroutine(HideCardAfter(1)); // this is to hide the back card image
+        StartCoroutine(BecomePrevCard(indexInStack));
+        cursorInCardOrder ++;
+        Debug.Log("cursorInCardOrder aaa:" + cursorInCardOrder);
+        //return false;
+    }
     public void ShowCurrCard()
     {
         int indexInStack = cardsOrder[cursorInCardOrder];
 
         //let card back appears and disappear after 1 sec
         currCard.enabled = true;
-        StartCoroutine (HideCardAfter(1));
+        //StartCoroutine (HideCardAfter(1)); // this is to hide the back card image
 
         //create a new image and fly to the left area
-        StartCoroutine (BecomePrevCard(indexInStack));
+        //StartCoroutine (BecomePrevCard(indexInStack));
+
+        Debug.Log("indexInStack: " + indexInStack);
+        Debug.Log("cursorInCardOrder: " + cursorInCardOrder);
+
+        // enable 3 bet buttons
+        upbutton.gameObject.SetActive(true);
+        downbutton.gameObject.SetActive(true);
+        equalbutton.gameObject.SetActive(true);
 
         // move cursor to the next card
-        cursorInCardOrder ++;
+        //cursorInCardOrder ++;
         
     }
 
+    // show current card that user need to bet
     IEnumerator BecomePrevCard(int preIndex)
     {
         // to make it more like flipping
