@@ -12,6 +12,7 @@ public class CardModel : MonoBehaviour
     public int cursorInCardOrder = 0;
     public float speed = 10.0f;
     public GameObject losePanel;
+    public GameObject winPanel;
 
     // Start is called before the first frame update
     void Start()
@@ -21,7 +22,10 @@ public class CardModel : MonoBehaviour
 
         createCardOrder();
         ShuffleCards();
+
+        //initially set win/lose panels inactive
         toggleLosePanel(false);
+        toggleWinPanel(false);
     }
 
     // Update is called once per frame
@@ -96,5 +100,9 @@ public class CardModel : MonoBehaviour
 
     public void toggleLosePanel(bool isShow) {
         losePanel.SetActive(isShow);
+    }
+
+    public void toggleWinPanel(bool isShow) {
+        winPanel.SetActive(isShow);
     }
 }
