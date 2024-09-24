@@ -777,6 +777,7 @@ MonoBehaviour:
   ParentPanel: {fileID: 1088034247}
   cursorInCardOrder: 0
   speed: 3
+  losePanel: {fileID: 214660465}
 --- !u!222 &451495443
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1618,13 +1619,13 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 214660466}
   - {fileID: 1841140482}
   - {fileID: 296611006}
   - {fileID: 1620655600}
   - {fileID: 1395937539}
   - {fileID: 451495440}
   - {fileID: 134076666}
+  - {fileID: 214660466}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
