@@ -850,6 +850,7 @@ GameObject:
   - component: {fileID: 1088034250}
   - component: {fileID: 1088034249}
   - component: {fileID: 1088034248}
+  - component: {fileID: 1088034252}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -944,6 +945,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1088034252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088034247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc20c14ee13ff4ffb82407e8a132962c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneName: HelpScene
 --- !u!1 &1395937538
 GameObject:
   m_ObjectHideFlags: 0
@@ -978,7 +992,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.74993896, y: 170}
+  m_AnchoredPosition: {x: 0.74993896, y: 160}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1395937540
@@ -1055,7 +1069,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -406.7063, y: 221}
+  m_AnchoredPosition: {x: -362, y: 187}
   m_SizeDelta: {x: 100.5874, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1620655601
@@ -1101,7 +1115,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1620655602}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1088034252}
+        m_TargetAssemblyTypeName: SwitchScene, Assembly-CSharp
+        m_MethodName: changeScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1620655602
 MonoBehaviour:
   m_ObjectHideFlags: 0
