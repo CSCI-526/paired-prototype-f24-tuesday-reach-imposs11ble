@@ -17,6 +17,9 @@ public class CardModel : MonoBehaviour
     public Button downbutton;
     public Button nextbutton;
 
+    public GameObject losePanel;
+    public GameObject winPanel;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,6 +42,10 @@ public class CardModel : MonoBehaviour
         cursorInCardOrder++;
         nextbutton.interactable = true;
 
+
+        //initially set win/lose panels inactive
+        toggleLosePanel(false);
+        toggleWinPanel(false);
     }
 
     // Update is called once per frame
@@ -145,5 +152,13 @@ public class CardModel : MonoBehaviour
     IEnumerator HideCardAfter(int sec) {
         yield return new WaitForSeconds (sec);
         currCard.enabled = false;
+    }
+
+    public void toggleLosePanel(bool isShow) {
+        losePanel.SetActive(isShow);
+    }
+
+    public void toggleWinPanel(bool isShow) {
+        winPanel.SetActive(isShow);
     }
 }

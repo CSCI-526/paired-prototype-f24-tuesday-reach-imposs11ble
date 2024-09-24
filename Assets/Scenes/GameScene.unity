@@ -1208,6 +1208,8 @@ MonoBehaviour:
   equalbutton: {fileID: 1344114025}
   downbutton: {fileID: 1535793961}
   nextbutton: {fileID: 134076667}
+  losePanel: {fileID: 795210352}
+  winPanel: {fileID: 1868375743}
 --- !u!222 &451495443
 CanvasRenderer:
   m_ObjectHideFlags: 0
