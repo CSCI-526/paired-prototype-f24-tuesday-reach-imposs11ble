@@ -11,8 +11,6 @@ public class CardModel : MonoBehaviour
     private List<int> cardsOrder = new List<int>();
     public int cursorInCardOrder = 0;
     public float speed = 10.0f;
-    public GameObject losePanel;
-    public GameObject winPanel;
 
     public Button upbutton;
     public Button equalbutton;
@@ -32,7 +30,6 @@ public class CardModel : MonoBehaviour
         createCardOrder();
         ShuffleCards();
 
-<<<<<<< HEAD
 
         // show one card first so user cab bet for the next 
         int indexInStack = cardsOrder[cursorInCardOrder];
@@ -42,11 +39,6 @@ public class CardModel : MonoBehaviour
         cursorInCardOrder++;
         nextbutton.interactable = true;
 
-=======
-        //initially set win/lose panels inactive
-        toggleLosePanel(false);
-        toggleWinPanel(false);
->>>>>>> main
     }
 
     // Update is called once per frame
@@ -153,13 +145,5 @@ public class CardModel : MonoBehaviour
     IEnumerator HideCardAfter(int sec) {
         yield return new WaitForSeconds (sec);
         currCard.enabled = false;
-    }
-
-    public void toggleLosePanel(bool isShow) {
-        losePanel.SetActive(isShow);
-    }
-
-    public void toggleWinPanel(bool isShow) {
-        winPanel.SetActive(isShow);
     }
 }
