@@ -83,6 +83,8 @@ public class CardModel : MonoBehaviour
     {
         int indexInStack = cardsOrder[cursorInCardOrder];
         int cardNumber = indexInStack % 13;
+        //TODO: notice that cardNumber hasen't take care of 2 joker cards rn,
+        // they will be considered as card 1 or 2. need to address this later
         int prevIndex = cursorInCardOrder - 1;
         indexInStack = cardsOrder[prevIndex];
         int prevCardNumber = indexInStack % 13;
@@ -91,10 +93,54 @@ public class CardModel : MonoBehaviour
         // Debug.Log("prevCardNumber: " + prevCardNumber);
         if (cardNumber > 10) // it is a J/Q/K or Joker card!
         {
-            
+            //TODO: add features for these types of card when implementing
+            // scoring system
         }
-        //TODO: implement card type check (spade/heart/club/diamond)
+        //TODO: 
 
+        if (betOperation.Equals("spade"))
+        {
+            if (indexInStack <= 12)
+            {
+                Debug.Log("Correct!");
+            } else
+            {
+                Debug.Log("False!");
+            }
+        }
+        if (betOperation.Equals("Club"))
+        {
+            if (13 <= indexInStack && indexInStack <= 26)
+            {
+                Debug.Log("Correct!");
+            }
+            else
+            {
+                Debug.Log("False!");
+            }
+        }
+        if (betOperation.Equals("heart"))
+        {
+            if (40 <= indexInStack && indexInStack <= 52)
+            {
+                Debug.Log("Correct!");
+            }
+            else
+            {
+                Debug.Log("False!");
+            }
+        }
+        if (betOperation.Equals("diamonds"))
+        {
+            if (27 <= indexInStack && indexInStack <= 39)
+            {
+                Debug.Log("Correct!");
+            }
+            else
+            {
+                Debug.Log("False!");
+            }
+        }
 
 
 
