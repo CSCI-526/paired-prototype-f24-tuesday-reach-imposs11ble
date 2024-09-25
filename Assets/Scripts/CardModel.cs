@@ -16,6 +16,10 @@ public class CardModel : MonoBehaviour
     public Button equalbutton;
     public Button downbutton;
     public Button nextbutton;
+    public Button spadeButton;
+    public Button clubButton;
+    public Button heartButton;
+    public Button diamondButton;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +28,10 @@ public class CardModel : MonoBehaviour
         upbutton.gameObject.SetActive(false);
         downbutton.gameObject.SetActive(false);
         equalbutton.gameObject.SetActive(false);
+        spadeButton.gameObject.SetActive(false);
+        clubButton.gameObject.SetActive(false);
+        heartButton.gameObject.SetActive(false);
+        diamondButton.gameObject.SetActive(false);
         // not showing the current card
         currCard.enabled = false;
 
@@ -79,6 +87,17 @@ public class CardModel : MonoBehaviour
         indexInStack = cardsOrder[prevIndex];
         int prevCardNumber = indexInStack % 13;
 
+        // Debug.Log("cardNumber: " + cardNumber);
+        // Debug.Log("prevCardNumber: " + prevCardNumber);
+        if (cardNumber > 10) // it is a J/Q/K or Joker card!
+        {
+            
+        }
+        //TODO: implement card type check (spade/heart/club/diamond)
+
+
+
+
         if (betOperation.Equals("up"))
         {
             if (cardNumber > prevCardNumber)
@@ -90,12 +109,33 @@ public class CardModel : MonoBehaviour
                 Debug.Log("False!");
             }
         }
-
+        if (betOperation.Equals("up"))
+        {
+            if (cardNumber == prevCardNumber)
+            {
+                Debug.Log("Correct!");
+            }
+            else
+            {
+                Debug.Log("False!");
+            }
+        }
+        if (betOperation.Equals("down"))
+        {
+            if (cardNumber < prevCardNumber)
+            {
+                Debug.Log("Correct!");
+            }
+            else
+            {
+                Debug.Log("False!");
+            }
+        }
 
         StartCoroutine(HideCardAfter(1)); // this is to hide the back card image
         StartCoroutine(BecomePrevCard(indexInStack));
         cursorInCardOrder ++;
-        Debug.Log("cursorInCardOrder aaa:" + cursorInCardOrder);
+        // Debug.Log("cursorInCardOrder aaa:" + cursorInCardOrder);
         //return false;
     }
     public void ShowCurrCard()
@@ -112,14 +152,18 @@ public class CardModel : MonoBehaviour
         Debug.Log("indexInStack: " + indexInStack);
         Debug.Log("cursorInCardOrder: " + cursorInCardOrder);
 
-        // enable 3 bet buttons
+        // enable all bet buttons
         upbutton.gameObject.SetActive(true);
         downbutton.gameObject.SetActive(true);
         equalbutton.gameObject.SetActive(true);
+        spadeButton.gameObject.SetActive(true);
+        clubButton.gameObject.SetActive(true);
+        heartButton.gameObject.SetActive(true);
+        diamondButton.gameObject.SetActive(true);
 
         // move cursor to the next card
         //cursorInCardOrder ++;
-        
+
     }
 
     // show current card that user need to bet
