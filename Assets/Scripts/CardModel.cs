@@ -45,6 +45,7 @@ public class CardModel : MonoBehaviour
 
         createCardOrder();
         ShuffleCards();
+        
 
 
         ShowFirstCard();
@@ -60,7 +61,7 @@ public class CardModel : MonoBehaviour
     {
         int indexInStack = cardsOrder[cursorInCardOrder];
         currCard.enabled = true;
-        //StartCoroutine(HideCardAfter(1));
+        StartCoroutine(HideCardAfter(1));
         StartCoroutine(BecomePrevCard(indexInStack));
         cursorInCardOrder++;
         nextbutton.interactable = true;
@@ -145,7 +146,6 @@ public class CardModel : MonoBehaviour
                 pointsForRound = 2;
                 MoveToNextCardWithoutBet();
             }
-
 
 
         }
@@ -344,18 +344,8 @@ public class CardModel : MonoBehaviour
 
         //let card back appears and disappear after 1 sec
         currCard.enabled = true;
-        //StartCoroutine (HideCardAfter(1)); // this is to hide the back card image
-
-        //create a new image and fly to the left area
-        //StartCoroutine (BecomePrevCard(indexInStack));
-
-        Debug.Log("indexInStack: " + indexInStack);
-        Debug.Log("cursorInCardOrder: " + cursorInCardOrder);
 
         EnableBetButtons();
-
-        // move cursor to the next card
-        //cursorInCardOrder ++;
 
     }
 
