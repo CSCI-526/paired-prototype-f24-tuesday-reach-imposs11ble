@@ -375,7 +375,7 @@ public class CardModel : MonoBehaviour
 
         yield return new WaitForSeconds(2);  // Display the final card for 2 seconds
 
-        toggleLosePanel(true);  // Show the Game Over panel after the final card
+        ToggleLosePanel(true);  // Show the Game Over panel after the final card
     }
 
     // show current card that user need to bet
