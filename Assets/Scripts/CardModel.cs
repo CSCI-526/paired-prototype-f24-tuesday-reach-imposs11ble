@@ -41,6 +41,8 @@ public class CardModel : MonoBehaviour
         // not showing the current card and betting buttons
         currCard.enabled = false;
         DisableBetButtons();
+        hintText.enabled = false; //no hint text inititally
+
 
         nextbutton.interactable = false; // make next button unclickable
 
@@ -62,6 +64,13 @@ public class CardModel : MonoBehaviour
     {
         int indexInStack = cardsOrder[cursorInCardOrder];
         currCard.enabled = true; //show the back of the card
+        if(hasHint)
+        {
+            hintText.enabled = true;
+            hasHint = false;
+        } else {
+            hintText.enabled = false; //hint is used. close it
+        }
         EnableBetButtons();
 
         //testing
@@ -77,7 +86,8 @@ public class CardModel : MonoBehaviour
         int indexInStack = cardsOrder[cursorInCardOrder];
         int cardNumber = (indexInStack+1) % 13;
         int cardSuit = indexInStack / 13;
-        int preInStack = cardsOrder[cursorInCardOrder - 1];
+        int preInStack = FindPreCardNotAbility(cardsOrder[cursorInCardOrder - 1]); //find previous card and that card is not ability card
+        //int preInStack = cardsOrder[cursorInCardOrder - 1];
         int prevCardNumber = (preInStack+1) % 13; //prev card to compare bigger/same/smaller
 
         // Handle Joker cards (card index 52 and 53 are Jokers)
@@ -89,7 +99,7 @@ public class CardModel : MonoBehaviour
 
         if (IsAbilityCard(indexInStack))
         {
-            HandleFaceCard(cardNumber);
+            HandleFaceCard(cardNumber, indexInStack);
             return;
         }
 
@@ -157,19 +167,31 @@ public class CardModel : MonoBehaviour
             pointsForRound = 1; //face card used in this round, hence back to 1
         }
 
+        StartCoroutine(HideCardAfter(1)); // this is to hide the back card image
+        StartCoroutine(BecomePrevCard(indexInStack));
+
         if (score >= 11)
         {
             ToggleWinPanel(true); // player win
             return;
         }
-
-        StartCoroutine(HideCardAfter(1)); // this is to hide the back card image
-        StartCoroutine(BecomePrevCard(indexInStack));
+        Debug.Log("Current score: " + score);
     }
 
-    private void HandleFaceCard(int cardNumber)
+    private int FindPreCardNotAbility(int index)
     {
-        MoveCardToAbilityPanel(); // Move face card to ability panel
+        while (IsAbilityCard(index))
+        {
+            Debug.Log("Previous card is ability card. Find the one before");
+            index --;
+        }
+        return index;
+    }
+
+    private void HandleFaceCard(int cardNumber, int indexInStack)
+    {
+        StartCoroutine(HideCardAfter(1));
+        StartCoroutine(MoveCardToAbilityPanel(indexInStack)); // Move face card to ability panel
         int nextInStack = cardsOrder[cursorInCardOrder + 1];
         if (cardNumber == 11) // Jack
         {
@@ -189,38 +211,23 @@ public class CardModel : MonoBehaviour
             pointsForRound = 2; // Mark the next round for double points
         }
         cursorInCardOrder ++; // Move to the next card
-        //ShowNextCard();
     }
 
-    private void MoveCardToAbilityPanel()
+    IEnumerator MoveCardToAbilityPanel(int preIndex)
     {
+        yield return new WaitForSeconds (1);
         // Display the ability card in the ability panel (right side)
         GameObject abilityCard = new GameObject();
         Image abilityImage = abilityCard.AddComponent<Image>();
-        abilityImage.sprite = cardsStack[cardsOrder[cursorInCardOrder]];
-
-        abilityCard.transform.localScale = new Vector2(0.01938f, 0.01938f);
-        abilityCard.transform.position = new Vector2(5, -3); // Move to the right (ability panel)
+        abilityImage.sprite = cardsStack[preIndex];
+        abilityCard.transform.localScale = new Vector2(0.01938f,0.01938f);
+        abilityCard.transform.position = new Vector2(0,-3);
         abilityCard.GetComponent<RectTransform>().SetParent(ParentPanel.transform);
         abilityCard.SetActive(true);
+
+        yield return new WaitForSeconds (1);
+        abilityCard.transform.position = new Vector2(5, -3); // Move to the right (ability panel)
     }
-
-    /*private void ShowNextCard()
-    {
-        cursorInCardOrder++; // Move to the next card
-        int nextCardIndex = cardsOrder[cursorInCardOrder];
-        StartCoroutine(HideCardAfter(1));
-        StartCoroutine(BecomePrevCard(nextCardIndex));
-    }*/
-
-    /*private void MoveToNextCardWithoutBet()
-    {
-        cursorInCardOrder++;
-
-        int nextCardIndex = cardsOrder[cursorInCardOrder];
-        StartCoroutine(HideCardAfter(1));
-        StartCoroutine(BecomePrevCard(nextCardIndex));
-    }*/
 
     private void HandleJoker()
     {
@@ -286,7 +293,7 @@ public class CardModel : MonoBehaviour
         prevCard.SetActive(true);
 
         //wait for 2 secs to stay
-        yield return new WaitForSeconds (2);
+        yield return new WaitForSeconds (1);
         //move to the left
         prevCard.transform.position = new Vector2(-6,-3);
     }
