@@ -6,38 +6,44 @@ using UnityEngine.UI;
 
 public class CardModel : MonoBehaviour
 {
-    public Sprite[] cardsStack;
-    public Image currCard;
-    public GameObject ParentPanel;
-    private List<int> cardsOrder = new List<int>();
-    public int cursorInCardOrder = 0;
-    public float speed = 10.0f;
-    public int score = 0;
-    //public int maxCards = 52;
-    public int extraLives = 0; // Number of lives for Jokers
+    public GameObject ParentPanel; //for new gameobject created during the game
+    public GameObject losePanel;
+    public GameObject winPanel;
 
-    public Button upbutton;
+    public Sprite[] cardsStack; //playing cards
+    public Image currCard;
+    private List<int> cardsOrder = new List<int>(); //order of playing cards
+    public int cursorInCardOrder = 0;
+
+    //private float speed = 10.0f;
+    public int score = 0;
+    public int extraLives = 0; // Number of lives for Jokers
+    public Text hintText;
+
+    public Button nextbutton;
+    // betting buttons
+    public Button upbutton; 
     public Button equalbutton;
     public Button downbutton;
-    public Button nextbutton;
     public Button spadeButton;
     public Button clubButton;
     public Button heartButton;
     public Button diamondButton;
 
-    public GameObject losePanel;
-    public GameObject winPanel;
-    public Text hintText;
-
     // Start is called before the first frame update
     void Start()
     {
-        nextbutton.interactable = false;
-        DisableBetButtons();
-        // not showing the current card
+        //initially set win/lose panels inactive
+        ToggleLosePanel(false);
+        ToggleWinPanel(false);
+        // not showing the current card and betting buttons
         currCard.enabled = false;
+        DisableBetButtons();
 
-        createCardOrder();
+        nextbutton.interactable = false; // make next button unclickable
+
+        //shuffle cards and put it into a list
+        CreateCardOrder();
         ShuffleCards();
 
         while (IsAbilityCard(cardsOrder[0]))
@@ -45,72 +51,15 @@ public class CardModel : MonoBehaviour
             ShuffleCards(); // Reshuffle if the first card is an ability card
         }
 
-
         ShowFirstCard();
-        nextbutton.interactable = true;
+        nextbutton.interactable = true; // make next button clickable (player ready to bet)
         Debug.Log("Cards Order: " + string.Join(", ", cardsOrder));
-    
-
-
-    //initially set win/lose panels inactive
-        toggleLosePanel(false);
-        toggleWinPanel(false);
-    }
-
-
-    bool IsAbilityCard(int cardIndex)
-    {
-        int cardNumber = cardIndex % 13;
-        return (cardNumber == 10 || cardNumber == 11 || cardNumber == 12 || cardIndex >= 52); // J, Q, K, or Joker
-    }
-
-
-    // Function to show the first card at the start of the game
-    private void ShowFirstCard()
-    {
-        int indexInStack = cardsOrder[cursorInCardOrder];
-        currCard.enabled = true;
-        StartCoroutine(HideCardAfter(1));
-        StartCoroutine(BecomePrevCard(indexInStack));
-        cursorInCardOrder++;
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    private void createCardOrder()
-    {
-        //create a list of numbers from 0 to 54
-        //playing cards has 52 with 2 ghost card
-        for(int i=0; i< cardsStack.Length; i++)
-        {
-            cardsOrder.Add(i);
-        }
-    }
-
-    private void ShuffleCards()
-    {
-        int numOfCardsleft = cardsOrder.Count;
-        while (numOfCardsleft > 1)
-        {
-            numOfCardsleft --;
-            int k = Random.Range(0,numOfCardsleft);
-            int value = cardsOrder[k];
-            cardsOrder[k] = cardsOrder[numOfCardsleft];
-            cardsOrder[numOfCardsleft] = value;
-        }
-        //Debug.Log("Cards Order: " + string.Join(", ", cardsOrder));
     }
 
     public void checkBetResult(string betOperation)
     {
 
         DisableBetButtons();
-
 
         int indexInStack = cardsOrder[cursorInCardOrder];
         int preInStack = cardsOrder[cursorInCardOrder-1];
@@ -132,16 +81,11 @@ public class CardModel : MonoBehaviour
             return;
         }
 
-
         if (IsAbilityCard(cardsOrder[cursorInCardOrder]))
         {
             HandleFaceCard(cardNumber, indexInStack / 13, pointsForRound);
             return;
         }
-
-
-
-        //TODO: 
 
         if (betOperation.Equals("spade"))
         {
@@ -232,8 +176,6 @@ public class CardModel : MonoBehaviour
             }
         }
 
-
-
         if (betOperation.Equals("up"))
         {
             if (cardNumber > prevCardNumber)
@@ -301,20 +243,13 @@ public class CardModel : MonoBehaviour
             }
         }
 
-
-
-
-
         cursorInCardOrder++;
 
         if (score == 11)
         {
-            toggleWinPanel(true); // Show win if all cards are guessed
+            ToggleWinPanel(true); // player win
             return;
         }
-
-
-        
 
         StartCoroutine(HideCardAfter(1)); // this is to hide the back card image
         StartCoroutine(BecomePrevCard(indexInStack));
@@ -351,7 +286,6 @@ public class CardModel : MonoBehaviour
         }
     }
 
-
     private void MoveCardToAbilityPanel()
     {
         // Display the ability card in the ability panel (right side)
@@ -365,12 +299,8 @@ public class CardModel : MonoBehaviour
         abilityCard.SetActive(true);
     }
 
-
-
     private void ShowNextCard()
     {
-
-
         int nextCardIndex = cardsOrder[cursorInCardOrder];
         StartCoroutine(HideCardAfter(1));
         StartCoroutine(BecomePrevCard(nextCardIndex));
@@ -408,10 +338,7 @@ public class CardModel : MonoBehaviour
         StartCoroutine(HideCardAfter(1));
         StartCoroutine(BecomePrevCard(cardsOrder[cursorInCardOrder]));
 
-
     }
-
-
 
     private void ProvideColorHint(int cardSuit)
     {
@@ -451,10 +378,6 @@ public class CardModel : MonoBehaviour
         toggleLosePanel(true);  // Show the Game Over panel after the final card
     }
 
-
-
-
-
     // show current card that user need to bet
     IEnumerator BecomePrevCard(int preIndex)
     {
@@ -480,13 +403,14 @@ public class CardModel : MonoBehaviour
         currCard.enabled = false;
     }
 
-    public void toggleLosePanel(bool isShow) {
+    public void ToggleLosePanel(bool isShow) {
         losePanel.SetActive(isShow);
     }
 
-    public void toggleWinPanel(bool isShow) {
+    public void ToggleWinPanel(bool isShow) {
         winPanel.SetActive(isShow);
     }
+
     private void DisableBetButtons()
     {
         upbutton.gameObject.SetActive(false);
@@ -507,5 +431,43 @@ public class CardModel : MonoBehaviour
         clubButton.gameObject.SetActive(true);
         heartButton.gameObject.SetActive(true);
         diamondButton.gameObject.SetActive(true);
+    }
+
+    private bool IsAbilityCard(int cardIndex)
+    {
+        int cardNumber = cardIndex % 13;
+        return (cardNumber == 10 || cardNumber == 11 || cardNumber == 12 || cardIndex >= 52); // J, Q, K, or Joker
+    }
+
+    // Function to show the first card at the start of the game
+    private void ShowFirstCard()
+    {
+        int indexInStack = cardsOrder[cursorInCardOrder];
+        currCard.enabled = true;
+        StartCoroutine(HideCardAfter(1));
+        StartCoroutine(BecomePrevCard(indexInStack));
+        cursorInCardOrder++;
+    }
+
+    //create a list of numbers from 0 to 54 (13*4 + 2 Joker)
+    private void CreateCardOrder()
+    {
+        for(int i=0; i< cardsStack.Length; i++)
+        {
+            cardsOrder.Add(i);
+        }
+    }
+
+    private void ShuffleCards()
+    {
+        int numOfCardsleft = cardsOrder.Count;
+        while (numOfCardsleft > 1)
+        {
+            numOfCardsleft --;
+            int k = Random.Range(0,numOfCardsleft);
+            int value = cardsOrder[k];
+            cardsOrder[k] = cardsOrder[numOfCardsleft];
+            cardsOrder[numOfCardsleft] = value;
+        }
     }
 }
