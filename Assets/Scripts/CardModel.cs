@@ -33,28 +33,37 @@ public class CardModel : MonoBehaviour
     void Start()
     {
         nextbutton.interactable = false;
-        upbutton.gameObject.SetActive(false);
-        downbutton.gameObject.SetActive(false);
-        equalbutton.gameObject.SetActive(false);
-        spadeButton.gameObject.SetActive(false);
-        clubButton.gameObject.SetActive(false);
-        heartButton.gameObject.SetActive(false);
-        diamondButton.gameObject.SetActive(false);
+        DisableBetButtons();
         // not showing the current card
         currCard.enabled = false;
 
         createCardOrder();
         ShuffleCards();
-        
+
+        while (IsAbilityCard(cardsOrder[0]))
+        {
+            ShuffleCards(); // Reshuffle if the first card is an ability card
+        }
 
 
         ShowFirstCard();
+        nextbutton.interactable = true;
+        Debug.Log("Cards Order: " + string.Join(", ", cardsOrder));
+    
 
 
-        //initially set win/lose panels inactive
+    //initially set win/lose panels inactive
         toggleLosePanel(false);
         toggleWinPanel(false);
     }
+
+
+    bool IsAbilityCard(int cardIndex)
+    {
+        int cardNumber = cardIndex % 13;
+        return (cardNumber == 10 || cardNumber == 11 || cardNumber == 12 || cardIndex >= 52); // J, Q, K, or Joker
+    }
+
 
     // Function to show the first card at the start of the game
     private void ShowFirstCard()
@@ -64,7 +73,7 @@ public class CardModel : MonoBehaviour
         StartCoroutine(HideCardAfter(1));
         StartCoroutine(BecomePrevCard(indexInStack));
         cursorInCardOrder++;
-        nextbutton.interactable = true;
+        
     }
 
     // Update is called once per frame
@@ -104,13 +113,13 @@ public class CardModel : MonoBehaviour
 
 
         int indexInStack = cardsOrder[cursorInCardOrder];
-        int proInStack = cardsOrder[cursorInCardOrder-1];
+        int preInStack = cardsOrder[cursorInCardOrder-1];
         int cardNumber = indexInStack % 13;
         //TODO: notice that cardNumber hasen't take care of 2 joker cards rn,
         // they will be considered as card 1 or 2. need to address this later
         int cardSuit = indexInStack / 13;
-        int prevCardNumber = proInStack % 13;
-        int prevCardSuit = proInStack / 13;
+        int prevCardNumber = preInStack % 13;
+        int prevCardSuit = preInStack / 13;
 
         int pointsForRound = 1;
         // Debug.Log("cardNumber: " + cardNumber);
@@ -124,31 +133,14 @@ public class CardModel : MonoBehaviour
         }
 
 
-        if (cardNumber >= 10) // it is a J/Q/K or Joker card!
+        if (IsAbilityCard(cardsOrder[cursorInCardOrder]))
         {
-            //TODO: add features for these types of card when implementing
-            // scoring system
-
-            if (cardNumber == 10) 
-            {
-                ProvideColorHint(cardSuit);
-                MoveToNextCardWithoutBet();
-            }
-
-            if (cardNumber == 11) 
-            {
-                ProvideOddEvenHint(cardNumber);
-                MoveToNextCardWithoutBet();
-            }
-
-            if (cardNumber == 12) 
-            {
-                pointsForRound = 2;
-                MoveToNextCardWithoutBet();
-            }
-
-
+            HandleFaceCard(cardNumber, indexInStack / 13, pointsForRound);
+            return;
         }
+
+
+
         //TODO: 
 
         if (betOperation.Equals("spade"))
@@ -321,11 +313,67 @@ public class CardModel : MonoBehaviour
             return;
         }
 
+
+        
+
         StartCoroutine(HideCardAfter(1)); // this is to hide the back card image
         StartCoroutine(BecomePrevCard(indexInStack));
    
         // Debug.Log("cursorInCardOrder aaa:" + cursorInCardOrder);
         //return false;
+    }
+
+    private void HandleFaceCard(int cardNumber, int cardSuit, int pointsForRound)
+    {
+        if (cardNumber == 10) // Jack
+        {
+            MoveCardToAbilityPanel(); // Move Jack to ability panel
+            ProvideColorHint(cardSuit); // Give color hint for next card
+            Debug.Log("Jack drawn! Providing hint for the next card.");
+            cursorInCardOrder++; // Move to the next card
+            ShowNextCard();
+        }
+        else if (cardNumber == 11) // Queen
+        {
+            MoveCardToAbilityPanel(); // Move Queen to ability panel
+            Debug.Log("Queen drawn! Providing odd/even hint for the next card.");
+            ProvideOddEvenHint(cardsOrder[cursorInCardOrder] % 13); // Hint for next card
+            cursorInCardOrder++; // Move to the next card
+            ShowNextCard();
+        }
+        else if (cardNumber == 12) // King
+        {
+            MoveCardToAbilityPanel(); // Move King to ability panel
+            Debug.Log("King drawn! Points for this round will be doubled.");
+            pointsForRound = 2; // Mark the next round for double points
+            cursorInCardOrder++; // Move to the next card
+            ShowNextCard();
+        }
+    }
+
+
+    private void MoveCardToAbilityPanel()
+    {
+        // Display the ability card in the ability panel (right side)
+        GameObject abilityCard = new GameObject();
+        Image abilityImage = abilityCard.AddComponent<Image>();
+        abilityImage.sprite = cardsStack[cardsOrder[cursorInCardOrder]];
+
+        abilityCard.transform.localScale = new Vector2(0.01938f, 0.01938f);
+        abilityCard.transform.position = new Vector2(5, -3); // Move to the right (ability panel)
+        abilityCard.GetComponent<RectTransform>().SetParent(ParentPanel.transform);
+        abilityCard.SetActive(true);
+    }
+
+
+
+    private void ShowNextCard()
+    {
+
+
+        int nextCardIndex = cardsOrder[cursorInCardOrder];
+        StartCoroutine(HideCardAfter(1));
+        StartCoroutine(BecomePrevCard(nextCardIndex));
     }
 
     private void MoveToNextCardWithoutBet()
