@@ -57,7 +57,7 @@ public class CardModel : MonoBehaviour
 
         ShowFirstCard();
         nextbutton.interactable = true; // make next button clickable (player ready to bet)
-        Debug.Log("Cards Order: " + string.Join(", ", cardsOrder));
+        //Debug.Log("Cards Order: " + string.Join(", ", cardsOrder));
     }
 
     public void ShowCurrCard()
@@ -74,9 +74,9 @@ public class CardModel : MonoBehaviour
         EnableBetButtons();
 
         //testing
-        int cardNumber = (indexInStack+1) % 13;
+        /*int cardNumber = (indexInStack+1) % 13;
         int cardSuit = indexInStack / 13;
-        Debug.Log("This card is: " + cardNumber + " and suit: " +cardSuit + " with index: " + indexInStack);
+        Debug.Log("This card is: " + cardNumber + " and suit: " +cardSuit + " with index: " + indexInStack);*/
     }
 
     public void checkBetResult(string betOperation)
@@ -108,43 +108,43 @@ public class CardModel : MonoBehaviour
         {
             isLose = false;
             score += 1* pointsForRound;
-            Debug.Log("Guessing Spade Correct!");
+            //Debug.Log("Guessing Spade Correct!");
         }
         if (betOperation.Equals("club") && (cardSuit == 1))
         {
             isLose = false;
             score = score + 1 * pointsForRound;
-            Debug.Log("Guessing Club Correct!");
+            //Debug.Log("Guessing Club Correct!");
         }
         if (betOperation.Equals("diamond") && (cardSuit == 2))
         {
             isLose = false;
             score = score + 1 * pointsForRound;
-            Debug.Log("Guessing Diamond Correct!");
+            //Debug.Log("Guessing Diamond Correct!");
         }
         if (betOperation.Equals("heart") && (cardSuit == 3))
         {
             isLose = false;
             score = score + 1 * pointsForRound;
-            Debug.Log("Guessing Heart Correct!");
+            //Debug.Log("Guessing Heart Correct!");
         }
         if (betOperation.Equals("up") && (cardNumber > prevCardNumber))
         {
             isLose = false;
             score = score + 1 * pointsForRound;
-            Debug.Log("Guessing Bigger Correct!");
+            //Debug.Log("Guessing Bigger Correct!");
         }
         if (betOperation.Equals("equal") && (cardNumber == prevCardNumber))
         {
             isLose = false;
             score = score + 3 * pointsForRound;
-            Debug.Log("Guessing same Correct!");
+            //Debug.Log("Guessing same Correct!");
         }
         if (betOperation.Equals("down") && (cardNumber < prevCardNumber))
         {
             isLose = false;
             score = score + 1 * pointsForRound;
-            Debug.Log("Guessing smaller Correct!");
+            //Debug.Log("Guessing smaller Correct!");
         }
         if (isLose) //player guesses wrongly
         {
@@ -197,17 +197,17 @@ public class CardModel : MonoBehaviour
         {
             int nextCardSuit = nextInStack / 13;
             ProvideColorHint(nextCardSuit); // Give color hint for next card
-            Debug.Log("Jack drawn! Providing hint for the next card.");
+            //Debug.Log("Jack drawn! Providing hint for the next card.");
         }
         else if (cardNumber == 12) // Queen
         {
             int nextCardNumber = (nextInStack + 1) % 13;
-            Debug.Log("Queen drawn! Providing odd/even hint for the next card.");
+            //Debug.Log("Queen drawn! Providing odd/even hint for the next card.");
             ProvideOddEvenHint(nextCardNumber); // Hint for next card
         }
         else if (cardNumber == 0) // King
         {
-            Debug.Log("King drawn! Points for this round will be doubled.");
+            //Debug.Log("King drawn! Points for this round will be doubled.");
             pointsForRound = 2; // Mark the next round for double points
         }
         cursorInCardOrder ++; // Move to the next card
@@ -231,7 +231,7 @@ public class CardModel : MonoBehaviour
 
     private void HandleJoker()
     {
-        //Debug.Log("Joker! ");
+        //to do: check logic and display
         extraLives++;
         cursorInCardOrder++;
         StartCoroutine(HideCardAfter(1));
