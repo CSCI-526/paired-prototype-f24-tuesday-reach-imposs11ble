@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class CardModel : MonoBehaviour
 {
@@ -32,6 +33,9 @@ public class CardModel : MonoBehaviour
     public Button heartButton;
     public Button diamondButton;
 
+    public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI lifeText;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -57,7 +61,7 @@ public class CardModel : MonoBehaviour
 
         ShowFirstCard();
         nextbutton.interactable = true; // make next button clickable (player ready to bet)
-        //Debug.Log("Cards Order: " + string.Join(", ", cardsOrder));
+        Debug.Log("Cards Order: " + string.Join(", ", cardsOrder));
     }
 
     public void ShowCurrCard()
@@ -79,26 +83,51 @@ public class CardModel : MonoBehaviour
         Debug.Log("This card is: " + cardNumber + " and suit: " +cardSuit + " with index: " + indexInStack);*/
     }
 
+    private int FindPreCardIndexNotAbility(int cardIndex)
+    {
+        int sign = -1;
+        while(sign == -1)
+        {
+            int cardNumber = (cardsOrder[cardIndex] + 1) % 13;
+            if (cardNumber == 11 || cardNumber == 12 || cardNumber == 0 || cardIndex >= 52)
+            {
+                cardIndex--;
+                continue;
+            }
+            else
+            {
+                sign = 1;
+            }
+            
+        }
+
+        
+        return cardIndex;
+        
+        //Debug.Log("isability card cardnumber:" + cardNumber);
+        //return (cardNumber == 11 || cardNumber == 12 || cardNumber == 0 || cardIndex >= 52); // J, Q, K, or Joker
+    }
+
     public void checkBetResult(string betOperation)
     {
         DisableBetButtons(); //stop betting
 
-        int indexInStack = cardsOrder[cursorInCardOrder];
-        int cardNumber = (indexInStack+1) % 13;
+        int indexInStack = cardsOrder[cursorInCardOrder]; // cursorInCardOrder is random generated card list ptr, start from 0
+        int cardNumber = (indexInStack+1) % 13; // card printed number
         int cardSuit = indexInStack / 13;
-        int preInStack = FindPreCardNotAbility(cardsOrder[cursorInCardOrder - 1]); //find previous card and that card is not ability card
+        //int preInStack = FindPreCardNotAbility(cardsOrder[cursorInCardOrder - 1]); //find previous card and that card is not ability card
+        int preInStack = FindPreCardIndexNotAbility(cursorInCardOrder - 1);
         //int preInStack = cardsOrder[cursorInCardOrder - 1];
-        int prevCardNumber = (preInStack+1) % 13; //prev card to compare bigger/same/smaller
-
+        //int prevCardNumber = (preInStack+1) % 13; //prev card to compare bigger/same/smaller
+        int prevCardNumber = (cardsOrder[preInStack] + 1) % 13; //card printed number that closest to curr ptr card
+        Debug.Log("cursorInCardOrder: " + cursorInCardOrder);
+        Debug.Log("preInStack: " + preInStack + " prevCardNumber: " + prevCardNumber + " cardNumber: " + cardNumber);
         // Handle Joker cards (card index 52 and 53 are Jokers)
-        if (indexInStack >= 52)
-        {
-            HandleJoker();
-            return;
-        }
-
+        
+        
         if (IsAbilityCard(indexInStack))
         {
+
             HandleFaceCard(cardNumber, indexInStack);
             return;
         }
@@ -146,17 +175,29 @@ public class CardModel : MonoBehaviour
             score = score + 1 * pointsForRound;
             //Debug.Log("Guessing smaller Correct!");
         }
+
+
+        //scoreText.text = "Score: " + score;
+        scoreText.text = "Score: " + score.ToString();
+
+
         if (isLose) //player guesses wrongly
         {
            if (extraLives > 0) // Check if player has an extra life from a Joker
             {
                 extraLives --;
+                lifeText.text = "you have " + extraLives.ToString() + " extra life";
                 Debug.Log("Incorrect, but you have an extra life! Lives left: " + extraLives);
             }
             else
             {
+                Debug.Log("Lose!!!! card num:" + cardNumber + " prev card num: " + prevCardNumber);
                 Debug.Log("Incorrect! Game Over.");
-                StartCoroutine(ShowGameOver(indexInStack));
+
+                Score.totalScore = score;
+                SceneManager.LoadScene("LoseScene");
+                //StartCoroutine(ShowGameOver(indexInStack));
+
                 return;
             } 
         }
@@ -172,12 +213,14 @@ public class CardModel : MonoBehaviour
 
         if (score >= 11)
         {
-            ToggleWinPanel(true); // player win
+            SceneManager.LoadScene("WinScene");
+            //ToggleWinPanel(true); // player win
             return;
         }
         Debug.Log("Current score: " + score);
     }
 
+    // don't use this please, it will not give you the index. We stucked on this for hours.
     private int FindPreCardNotAbility(int index)
     {
         while (IsAbilityCard(index))
@@ -210,7 +253,15 @@ public class CardModel : MonoBehaviour
             //Debug.Log("King drawn! Points for this round will be doubled.");
             pointsForRound = 2; // Mark the next round for double points
         }
+        else if (indexInStack == 52 || indexInStack == 53) // Joker
+        {
+            Debug.Log("need to handle joker!!!");
+            int nextCardNumber = (nextInStack + 1) % 13;
+            HandleJoker();
+        }
+        //Debug.Log("before ++ called");
         cursorInCardOrder ++; // Move to the next card
+        //Debug.Log("++ called");
     }
 
     IEnumerator MoveCardToAbilityPanel(int preIndex)
@@ -231,39 +282,70 @@ public class CardModel : MonoBehaviour
 
     private void HandleJoker()
     {
-        //to do: check logic and display
         extraLives++;
-        cursorInCardOrder++;
-        StartCoroutine(HideCardAfter(1));
-        StartCoroutine(BecomePrevCard(cardsOrder[cursorInCardOrder]));
+        //cursorInCardOrder++;
+
+        //TODO: check logic and display
+        Debug.Log("HandleJoker called");
+        lifeText.text = "you have " + extraLives.ToString() + " extra life";
+
+        //StartCoroutine(HideCardAfter(1));
+        //StartCoroutine(BecomePrevCard(cardsOrder[cursorInCardOrder]));
 
     }
 
     private void ProvideColorHint(int cardSuit)
     {
+        int nextInStack = cardsOrder[cursorInCardOrder + 1];
+        //Debug.Log("cardSuit: " + cardSuit + "next: " + nextInStack);
         string colorHint = "";
-        if (cardSuit == 0 || cardSuit == 1) // Spades and Clubs
+        int wantInStack = -1;
+        int hintCardSuit = cardSuit;
+        if (nextInStack == 11 ||
+            nextInStack == 24 ||
+            nextInStack == 37 ||
+            nextInStack == 50)
+        {
+            wantInStack = cardsOrder[cursorInCardOrder + 2];
+            hintCardSuit = wantInStack / 13;
+
+            //Debug.Log("cardSuit: " + cardSuit + "next: " + nextInStack);
+        }
+        
+        if (hintCardSuit == 0 || hintCardSuit == 1) // Spades and Clubs
         {
             colorHint = "Black";
         }
-        else if (cardSuit == 2 || cardSuit == 3) // Hearts and Diamonds
+        else if (hintCardSuit == 2 || hintCardSuit == 3) // Hearts and Diamonds
         {
             colorHint = "Red";
         }
         hasHint = true;
-        hintText.text = "Hint: The suit color is " + colorHint;
+        hintText.text = "Hint: The next number card suit color is " + colorHint;
     }
 
     private void ProvideOddEvenHint(int cardNumber)
     {
         hasHint = true;
-        if (cardNumber % 2 == 0) // Even number
+        int wantInStack = -1;
+        int nextInStack = cardsOrder[cursorInCardOrder + 1];
+        int hintCardNumber = cardNumber;
+        if (nextInStack == 10 ||
+            nextInStack == 23 ||
+            nextInStack == 36 ||
+            nextInStack == 49)
         {
-            hintText.text = "Hint: The card is even.";
+            wantInStack = cardsOrder[cursorInCardOrder + 2];
+            hintCardNumber = wantInStack % 13;
+            
+        }
+        if (hintCardNumber % 2 == 0) // Even number
+        {
+            hintText.text = "Hint: The next number card is even.";
         }
         else // Odd number
         {
-            hintText.text = "Hint: The card is odd.";
+            hintText.text = "Hint: The next number card is odd.";
         }
     }
 
@@ -336,8 +418,12 @@ public class CardModel : MonoBehaviour
     private bool IsAbilityCard(int cardIndex)
     {
         int cardNumber = (cardIndex+1) % 13;
+        //cardNumber = (cardsOrder[cardIndex] + 1) % 13;
+        Debug.Log("isability card cardnumber:" + cardNumber);
         return (cardNumber == 11 || cardNumber == 12 || cardNumber == 0 || cardIndex >= 52); // J, Q, K, or Joker
     }
+
+    
 
     // Function to show the first card at the start of the game
     private void ShowFirstCard()
@@ -369,5 +455,17 @@ public class CardModel : MonoBehaviour
             cardsOrder[k] = cardsOrder[numOfCardsleft];
             cardsOrder[numOfCardsleft] = value;
         }
+
+
+        // debug use only
+        //cardsOrder[0] = 1;
+        //cardsOrder[1] = 2;
+        //cardsOrder[2] = 10;
+        //cardsOrder[3] = 11;
+        //cardsOrder[4] = 45;
+        //cardsOrder[5] = 4;
+        //cardsOrder[6] = 28;
+
+
     }
 }
