@@ -13,7 +13,9 @@ public class Score : MonoBehaviour
     void Start()
     {
         Debug.Log("game over score:" + totalScore.ToString());
-        finalScoreText.text = "Your Score is: " + totalScore.ToString();
+        //finalScoreText.GetComponent<TMP_Text>();
+        finalScoreText.SetText("Your Score is: " + totalScore.ToString());
+        //finalScoreText.text = "Enter Your Text Here";
 
     }
 
