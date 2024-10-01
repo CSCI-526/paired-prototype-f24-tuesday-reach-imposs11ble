@@ -1416,7 +1416,7 @@ MonoBehaviour:
   winPanel: {fileID: 1868375743}
   cardsStack:
   - {fileID: 21300000, guid: 53a023cb3065a49ba9e586df6c179e1b, type: 3}
-  - {fileID: 21300000, guid: db7164c5e56cd4f5686d4fe0b3feacf5, type: 3}
+  - {fileID: 21300000, guid: db7cc21e4a93d4b98be94012f6e4a020, type: 3}
   - {fileID: 21300000, guid: 049ea94ba73f64c809b68aeb58d37564, type: 3}
   - {fileID: 21300000, guid: e31cdeb2bdb784f6ab63442c94a560af, type: 3}
   - {fileID: 21300000, guid: 4798afc5d60a140bb8d18e180fa9dbf9, type: 3}
@@ -1460,7 +1460,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 1a9f46a7074d54a5a999f859c11e4c43, type: 3}
   - {fileID: 21300000, guid: 1726fb3e62f0b4e7f8815acdfc33a046, type: 3}
   - {fileID: 21300000, guid: 834e2d0b8116a4060bf38913ed44d362, type: 3}
-  - {fileID: 21300000, guid: ac32e5fd2cd624bfd96a86b55b135841, type: 3}
+  - {fileID: 21300000, guid: c8b858d7eb05a453c8c2c579c17df9e3, type: 3}
   - {fileID: 21300000, guid: 3c32d02490f1849519bb0e0b9d79a4c3, type: 3}
   - {fileID: 21300000, guid: 40de31c88764a49c79d9c8c224ceae74, type: 3}
   - {fileID: 21300000, guid: a81ed8be3b95e4a4994b7dba6ff44522, type: 3}

@@ -457,15 +457,21 @@ public class CardModel : MonoBehaviour
         }
 
 
-        // debug use only
+        // demo use only
         //cardsOrder[0] = 1;
-        //cardsOrder[1] = 2;
-        //cardsOrder[2] = 10;
-        //cardsOrder[3] = 11;
-        //cardsOrder[4] = 45;
-        //cardsOrder[5] = 4;
-        //cardsOrder[6] = 28;
-
-
+        //cardsOrder[1] = 2; //上
+        //cardsOrder[2] = 9; // 上
+        //cardsOrder[3] = 52; // Joker
+        //cardsOrder[4] = 5; // 左1
+        //cardsOrder[5] = 45; // 7 heart
+        //cardsOrder[6] = 4;// 下
+        //cardsOrder[7] = 28; // 3 红心 下
+        //cardsOrder[8] = 3; // 4 上
+        //cardsOrder[9] = 11; // Q
+        //cardsOrder[10] = 6; //上
+        //cardsOrder[11] = 12; // K
+        //cardsOrder[12] = 1;//下
+        //cardsOrder[13] = 11;// J
+        //cardsOrder[14] = 9;//上
     }
 }
